@@ -1,5 +1,8 @@
 ﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Running;
+using GhostFields.Benchmarks.Execution;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +10,75 @@ using System.Threading.Tasks;
 
 namespace MonitorSlim
 {
+    public class MonitorBenchmark : BenchmarkBase
+    {
+        private const string text = "Bonjôrnõ. Hello world of î rollos...";
+        private readonly int COUNT = 10_000_000;
+        private readonly int MAX_THREADS = 5;
+
+        [BenchmarkMethod(Code = "M1", Category = "Monitor", Name = "Run benchmark : lock() vs MonitorSlim.")]
+        public void RunBenchMonitor()
+        {
+            BenchmarkRunner.Run<BenchMonitor>();
+        }
+
+        [BenchmarkMethod(Code = "M2", Category = "Monitor", Name = "Run everage class using lock() vs using MonitorSlim.")]
+        public void RunBenchAverage()
+        {
+            BenchmarkRunner.Run<BenchAverage>();
+        }
+
+        [BenchmarkMethod(Code = "Q1", Category = "Concurrent queue", Name = "SpinWait based 'slim' concurrent queue vs .Net ConcurrentQueue.")]
+        public void ConcurrentRingBuffer()
+        {
+            for (int j = 1, th = 1; j < MAX_THREADS; j++, th *= 2)
+            {
+                var q = new ConcurrentQueueSlim<int>();
+                RunParalellAction(th, (thid) =>
+                {
+                    if (thid % 2 == 0)
+                    {
+                        for (int i = 0; i < COUNT; i++)
+                        {
+                            q.Enqueue(i);
+                        }
+                    }
+                    else
+                    {
+                        int n = 0;
+                        do
+                        {
+                            if (q.TryDequeue(out var o)) n++;
+                        } while (n < COUNT);
+                    }
+                }).PrintToConsole("Slim Queue - Thread Count = " + th).PrintDelayPerOp(COUNT * th);
+            }
+
+            for (int j = 1, th = 1; j < MAX_THREADS; j++, th *= 2)
+            {
+                var q = new ConcurrentQueue<int>();
+                RunParalellAction(th, (thid) =>
+                {
+                    if (thid % 2 == 0)
+                    {
+                        for (int i = 0; i < COUNT; i++)
+                        {
+                            q.Enqueue(i);
+                        }
+                    }
+                    else
+                    {
+                        int n = 0;
+                        do
+                        {
+                            if (q.TryDequeue(out var o)) n++;
+                        } while (n < COUNT);
+                    }
+                }).PrintToConsole(".Net Concurrent Queue - Thread Count = " + th).PrintDelayPerOp(COUNT * th);
+            }
+        }
+    }
+
     public class BenchMonitor
     {
         private MonitorSlim _monitor;
