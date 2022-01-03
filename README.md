@@ -12,5 +12,5 @@ Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical 
 
 |       Method |      Mean |     Error |    StdDev |
 |------------- |----------:|----------:|----------:|
-| LockBasedFoo | 13.315 ns | 0.0245 ns | 0.0229 ns |
-| SlimBasedFoo |  6.114 ns | 0.0858 ns | 0.0803 ns |
+| lock() | 13.315 ns | 0.0245 ns | 0.0229 ns |
+| MonitorSlim.Enter / Exit |  6.114 ns | 0.0858 ns | 0.0803 ns |
