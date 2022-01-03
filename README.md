@@ -15,7 +15,9 @@ Results :
   DefaultJob : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT*
 
 # ConcurrentQueueSlim
-This class is written to test a naive implementation of a SpinWait based concurrent queue. We can see it is up to 5x or faster than .Net lock-free implementation when the number of concurrent thread to enqueue / dequeue is high. It mean that SpinWait is stopping few threads by calling Sleep(). **The side effect** is that the distribution of items to the threads is not as uniform as the one of the .Net ConcurrentQueue.
+This class is written to test a naive implementation of a SpinWait based concurrent queue. **This is a toy !**
+
+We can see it is up to 5x or faster than .Net lock-free implementation when the number of concurrent thread to enqueue / dequeue is high. It mean that SpinWait is stopping few threads by calling Sleep(). **The side effect** is that the distribution of items to the threads is not as uniform as the one of the .Net ConcurrentQueue.
 
 ![](https://raw.githubusercontent.com/Gabriel-RABHI/GhostFields.MonitorSlim/master/Pictures/queue-results.jpg)
 
