@@ -1,5 +1,5 @@
 # GhostFields.MonitorSlim
-Up to 2x faster Monitor class for .Net, usefull for small and hot critical code sections.
+Up to 2x faster Monitor class for .Net, useful for small and hot critical code sections like inner fields protection. Typical use case is done in the sample with the AverageAccumulator class implementations. This Monitor is a structure without any reference. It can be integrated in unmanaged structure while the .Net Monitor class need an object reference to call Enter or Exit methods.
 
 Results :
 
@@ -8,11 +8,18 @@ Results :
 | lock() | 13.315 ns | 0.0245 ns | 0.0229 ns |
 | MonitorSlim.Enter / Exit |  6.114 ns | 0.0858 ns | 0.0803 ns |
 
-BenchmarkDotNet=v0.13.1, OS=Windows 10.0.19042.1110 (20H2/October2020Update)
-Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical cores
-.NET SDK=6.0.100
-  [Host]     : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT  [AttachedDebugger]
-  DefaultJob : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT
+*B*enchmarkDotNet=v0.13.1, OS=Windows 10.0.19042.1110 (20H2/October2020Update)*
+*Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical cores*
+*.NET SDK=6.0.100*
+  *[Host]     : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT  [AttachedDebugger]*
+  DefaultJob : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT*
 
 # GhostFields.ConcurrentQueueSlim
-Up to 5x or more faster concurrent queue when the number of thread is high.
+This class is written to test a naive implementation of a SpinWait based concurrent queue. We can see it is up to 5x or faster than .Net lock-free implementation when the number of concurrent thread to enqueue / dequeue is high. It mean that SpinWait is stopping few threads by calling Sleep(). **The side effect** is that the distribution of items to the threads is not as uniform as the one of the .Net ConcurrentQueue.
+
+![](C:\Users\gabri\source\repos\MonitorSlim\Pictures\queue-results.jpg)
+
+But as a job queue, you can see that even with 4 threads to enqueue and 4 threads to dequeue, the total item count is stable : it means that few thread are receiving large number of items like a batched list of items. This property is a good one for a job publisher / consumer model while process many items on a single thread is faster than perfect distribution.
+
+**Be careful**, that kind of benchmark often lie. Do your own production code based benchmark to see the potential benefits.
+
