@@ -13,3 +13,6 @@ Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical 
 .NET SDK=6.0.100
   [Host]     : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT  [AttachedDebugger]
   DefaultJob : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT
+
+# GhostFields.ConcurrentQueueSlim
+Up to 5x or more faster concurrent queue when the number of thread is high.
