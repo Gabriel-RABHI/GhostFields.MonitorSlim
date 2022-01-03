@@ -9,16 +9,16 @@ namespace MonitorSlim
 {
     public class BenchMonitor
     {
-        private ShortMonitor _monitor;
+        private MonitorSlim _monitor;
 
         [Benchmark]
-        public void LockBasedFoo()
+        public void LockCriticalSection()
         {
             lock (this) { }
         }
 
         [Benchmark]
-        public void SlimBasedFoo() { _monitor.Enter(); _monitor.Exit(); }
+        public void MonitorSlimCriticalSection() { _monitor.Enter(); _monitor.Exit(); }
     }
 
     public class BenchAverage
@@ -35,7 +35,7 @@ namespace MonitorSlim
 
     public class AverageAccumulatorSlim
     {
-        private ShortMonitor _monitor;
+        private MonitorSlim _monitor;
         private int _count, _sum;
 
         public void Add(int v)

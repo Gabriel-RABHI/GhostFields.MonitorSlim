@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MonitorSlim
 {
-    public struct ShortMonitor
+    public struct MonitorSlim
     {
         private int _thId;
 
