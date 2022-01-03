@@ -110,7 +110,7 @@ namespace MonitorSlim
                 int n = 0;
                 RunParalellAction(th, (thid) =>
                 {
-                    if (thid % 2 == 0)
+                    if (thid == 0)
                     {
                         for (int i = 0; i < COUNT; i++)
                             q.Enqueue(i);
