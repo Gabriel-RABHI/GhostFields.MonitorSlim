@@ -17,7 +17,7 @@ Results :
 # GhostFields.ConcurrentQueueSlim
 This class is written to test a naive implementation of a SpinWait based concurrent queue. We can see it is up to 5x or faster than .Net lock-free implementation when the number of concurrent thread to enqueue / dequeue is high. It mean that SpinWait is stopping few threads by calling Sleep(). **The side effect** is that the distribution of items to the threads is not as uniform as the one of the .Net ConcurrentQueue.
 
-![](C:\Users\gabri\source\repos\MonitorSlim\Pictures\queue-results.jpg)
+![](https://raw.githubusercontent.com/Gabriel-RABHI/GhostFields.MonitorSlim/master/Pictures/queue-results.jpg)
 
 But as a job queue, you can see that even with 4 threads to enqueue and 4 threads to dequeue, the total item count is stable : it means that few thread are receiving large number of items like a batched list of items. This property is a good one for a job publisher / consumer model while process many items on a single thread is faster than perfect distribution.
 
