@@ -28,6 +28,30 @@ namespace MonitorSlim
             BenchmarkRunner.Run<BenchAverage>();
         }
 
+        [BenchmarkMethod(Code = "M3", Category = "Monitor", Name = "Correctness test.")]
+        public void CorrectnessTest()
+        {
+            int n = 0;
+            var monitor = new MonitorSlim();
+            RunParalellAction(Environment.ProcessorCount, (thid) =>
+            {
+                for (int i = 0; i < COUNT * 20; i++)
+                {
+                    monitor.Enter();
+                    var v = Interlocked.Increment(ref n);
+                    if (v > 1)
+                        throw new Exception("Bad value :" + v);
+                    v = Interlocked.Decrement(ref n);
+                    if (v < 0)
+                        throw new Exception("Bad value :" + v);
+                    monitor.Exit();
+                    if (i % COUNT == 0)
+                        Console.Write(".");
+                }
+                Console.WriteLine();
+            }).PrintToConsole("No incoherence found.");
+        }
+
         [BenchmarkMethod(Code = "Q1", Category = "Concurrent queue", Name = "SpinWait based 'slim' concurrent queue vs .Net ConcurrentQueue.")]
         public void ConcurrentQueueBenchmark()
         {
