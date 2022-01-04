@@ -14,7 +14,57 @@ Results :
   *[Host]     : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT  [AttachedDebugger]*
   DefaultJob : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT*
 
-# ConcurrentQueueSlim
+## Usage
+
+That kind of Monitor is used to protect really short code sections that are called millions times, typically to protect inner fields from incoherences. You have to copy the MonitorSlim in your source code to permit code inlining.
+
+```
+	public class AverageAccumulator
+    {
+        private MonitorSlim _monitor;
+        private int _count, _sum;
+
+        public void Add(int v)
+        {
+            _monitor.Enter();
+            try
+            {
+                _sum += v;
+                _count++;
+            }
+            finally
+            {
+                _monitor.Exit();
+            }
+        }
+
+        public int Result
+        {
+            get
+            {
+                _monitor.Enter();
+                try
+                {
+                    return _count == 0 ? 0 : _sum / _count;
+                }
+                finally
+                {
+                    _monitor.Exit();
+                }
+            }
+        }
+    }
+```
+
+Performance gain against lock() is significant :
+
+| Method           |      Mean |     Error |    StdDev |
+| ---------------- | --------: | --------: | --------: |
+| LockBasedAverage | 14.102 ns | 0.0159 ns | 0.0148 ns |
+| SlimBasedAverage |  6.676 ns | 0.0111 ns | 0.0086 ns |
+
+## ConcurrentQueueSlim
+
 This class is written to test a naive implementation of a SpinWait based concurrent queue. **This is a toy !**
 
 We can see it is up to 5x or faster than .Net lock-free implementation when the number of concurrent thread to enqueue / dequeue is high. It mean that SpinWait is stopping few threads by calling Sleep(). **The side effect** is that the distribution of items to the threads is not as uniform as the one of the .Net ConcurrentQueue.
