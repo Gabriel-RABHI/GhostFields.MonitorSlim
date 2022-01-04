@@ -19,7 +19,7 @@ Results :
 That kind of Monitor is used to protect really short code sections that are called millions times, typically to protect inner fields from incoherences. You have to copy the MonitorSlim in your source code to permit code inlining.
 
 ```
-	public class AverageAccumulator
+    public class AverageAccumulator
     {
         private MonitorSlim _monitor;
         private int _count, _sum;
