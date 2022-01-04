@@ -19,7 +19,7 @@ Results :
 That kind of Monitor is used to protect really short code sections that are called millions times, typically to protect inner fields from incoherences. You have to copy the MonitorSlim in your source code to permit code inlining.
 
 ```
-	public class AverageAccumulator
+    public class AverageAccumulator
     {
         private MonitorSlim _monitor;
         private int _count, _sum;
@@ -75,3 +75,5 @@ But as a job queue, you can see that even with 4 threads to enqueue and 4 thread
 
 **Be careful**, that kind of benchmark often lie. Do your own production code based benchmark to see the potential benefits.
 
+## License
+GhostFields.MonitorSlim is licensed under MIT License, which means it is free for all of your products, including commercial software.
