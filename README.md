@@ -75,3 +75,5 @@ But as a job queue, you can see that even with 4 threads to enqueue and 4 thread
 
 **Be careful**, that kind of benchmark often lie. Do your own production code based benchmark to see the potential benefits.
 
+## License
+GhostFields.MonitorSlim is licensed under MIT License, which means it is free for all of your products, including commercial software.
