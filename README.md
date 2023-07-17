@@ -1,4 +1,4 @@
-#CAUTION
+# CAUTION !
 
 System.Environment.CurrentManagedThreadId seems to not be reliable ! If a GC collect is done, or something like that, it can return a different ID at two different time...
 
