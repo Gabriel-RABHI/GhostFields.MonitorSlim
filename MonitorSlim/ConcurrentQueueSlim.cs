@@ -13,7 +13,7 @@
 
         private ConcurrentManagedQueueSegment<T> _currentWrite;
         private ConcurrentManagedQueueSegment<T> _currentRead;
-        private int _thId = 0;
+        private int _lock = 0;
 
         public ConcurrentQueueSlim()
         {
@@ -22,13 +22,9 @@
 
         public void Enqueue(T v)
         {
-            var id = System.Environment.CurrentManagedThreadId;
-            if (_thId != id)
-            {
-                var spinner = new SpinWait();
-                while (Interlocked.CompareExchange(ref _thId, id, 0) != 0)
-                    spinner.SpinOnce();
-            }
+            var spinner = new SpinWait();
+            while (Interlocked.CompareExchange(ref _lock, 5, 0) != 0)
+                spinner.SpinOnce();
             /********/
             if (_currentWrite._head < SEG_SIZE)
                 _currentWrite._map[_currentWrite._head++] = v;
@@ -38,26 +34,22 @@
                 _currentWrite._map[_currentWrite._head++] = v;
             }
             /********/
-            _thId = 0;
+            _lock = 0;
         }
 
         public bool TryDequeue(out T r)
         {
             if (_currentRead._head > _currentRead._tail || _currentRead != _currentWrite)
             {
-                var id = System.Environment.CurrentManagedThreadId;
-                if (_thId != id)
-                {
-                    var spinner = new SpinWait();
-                    while (Interlocked.CompareExchange(ref _thId, id, 0) != 0)
-                        spinner.SpinOnce();
-                }
+                var spinner = new SpinWait();
+                while (Interlocked.CompareExchange(ref _lock, 5, 0) != 0)
+                    spinner.SpinOnce();
                 /********/
-            _redo:
+                _redo:
                 if (_currentRead._tail < _currentRead._head)
                 {
                     r = _currentRead._map[_currentRead._tail++];
-                    _thId = 0;
+                    _lock = 0;
                     return true;
                 }
                 else
@@ -69,7 +61,7 @@
                     }
                 }
                 /********/
-                _thId = 0;
+                _lock = 0;
             }
             r = default;
             return false;
