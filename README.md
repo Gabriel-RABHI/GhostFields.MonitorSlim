@@ -1,9 +1,7 @@
-# CAUTION !
-
-System.Environment.CurrentManagedThreadId seems to not be reliable on Linux ! If a GC collect is done, or something like that, it can return a different ID at two different time...
-
 # MonitorSlim
-Up to 2x faster Monitor class for .Net, useful for small and hot critical code sections like inner fields protection. Typical use case is done in the sample with the AverageAccumulator class implementations. This Monitor is a structure without any reference. It can be integrated in unmanaged structure while the .Net Monitor class need an object reference to call Enter or Exit methods.
+Up to 2x faster Monitor class for .Net, useful for really short and hot critical code sections like inner fields protection. Typical use case is done in the sample with the AverageAccumulator class implementations. This Monitor is a structure without any reference. It can be integrated in unmanaged structure while the .Net Monitor class need an object reference to call Enter or Exit methods.
+
+**This Monitor do not permit to be acquire many times by the same thread.**
 
 Results :
 
