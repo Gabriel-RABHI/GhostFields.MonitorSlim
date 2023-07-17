@@ -13,7 +13,7 @@ namespace MonitorSlim
 
         public void Enter()
         {
-            var id = Thread.CurrentThread.ManagedThreadId;
+            var id = System.Environment.CurrentManagedThreadId;
             if (_thId != id)
             {
                 var spinner = new SpinWait();
@@ -24,7 +24,7 @@ namespace MonitorSlim
 
         public bool TryEnter()
         {
-            var id = Thread.CurrentThread.ManagedThreadId;
+            var id = System.Environment.CurrentManagedThreadId;
             if (_thId == id)
                 return true;
             return Interlocked.CompareExchange(ref _thId, id, 0) == 0;
