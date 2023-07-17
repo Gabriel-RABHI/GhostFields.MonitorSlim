@@ -22,7 +22,7 @@
 
         public void Enqueue(T v)
         {
-            var id = Thread.CurrentThread.ManagedThreadId;
+            var id = System.Environment.CurrentManagedThreadId;
             if (_thId != id)
             {
                 var spinner = new SpinWait();
@@ -45,7 +45,7 @@
         {
             if (_currentRead._head > _currentRead._tail || _currentRead != _currentWrite)
             {
-                var id = Thread.CurrentThread.ManagedThreadId;
+                var id = System.Environment.CurrentManagedThreadId;
                 if (_thId != id)
                 {
                     var spinner = new SpinWait();
