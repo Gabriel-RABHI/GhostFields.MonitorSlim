@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 
 namespace MonitorSlim
 {
+
+
     public class MonitorBenchmark : BenchmarkBase
     {
         private const string text = "Bonjôrnõ. Hello world of î rollos...";

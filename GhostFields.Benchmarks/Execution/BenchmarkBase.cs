@@ -113,6 +113,7 @@ namespace GhostFields.Benchmarks.Execution
                         }
                         Interlocked.Increment(ref _ended);
                     });
+                    th.Name = $"Thread N={i}";
                     th.Start(i);
                 }
                 do

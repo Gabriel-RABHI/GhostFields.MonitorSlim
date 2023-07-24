@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorSlim", "MonitorSlim\MonitorSlim.csproj", "{75509743-1E6B-465E-B814-0790F7B56C09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonitorSlim", "MonitorSlim\MonitorSlim.csproj", "{75509743-1E6B-465E-B814-0790F7B56C09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostFields.Benchmarks", "GhostFields.Benchmarks\GhostFields.Benchmarks.csproj", "{77915DA8-8AD2-4F54-9C50-AFB90EC7BC04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostFields.Benchmarks", "GhostFields.Benchmarks\GhostFields.Benchmarks.csproj", "{77915DA8-8AD2-4F54-9C50-AFB90EC7BC04}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitorSlim.Tests", "MonitorSlim.Tests\MonitorSlim.Tests.csproj", "{1FC2E19E-1A92-4EE4-8CE0-86EAC9D7C5FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{77915DA8-8AD2-4F54-9C50-AFB90EC7BC04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77915DA8-8AD2-4F54-9C50-AFB90EC7BC04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77915DA8-8AD2-4F54-9C50-AFB90EC7BC04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FC2E19E-1A92-4EE4-8CE0-86EAC9D7C5FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FC2E19E-1A92-4EE4-8CE0-86EAC9D7C5FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FC2E19E-1A92-4EE4-8CE0-86EAC9D7C5FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FC2E19E-1A92-4EE4-8CE0-86EAC9D7C5FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
