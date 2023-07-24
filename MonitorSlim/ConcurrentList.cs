@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define ACURRATE_VALUES_NUMBER
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -123,6 +125,30 @@ namespace MonitorSlim
             }
         }
 
+#if !ACURRATE_VALUES_NUMBER
+        /// <summary>
+        /// A lock free item enumerable.
+        /// </summary>
+        public IEnumerable<T> Values
+        {
+            get
+            {
+                ConcurrentListSlot<T>[] readed = _slots;
+                var n = 0;
+                var count = _count;
+                foreach (var s in readed)
+                {
+                    if (!s.Assigned || n > count)
+                        yield break;
+                    if (!s.Removed)
+                    {
+                        n++;
+                        yield return s.Value;
+                    }
+                }
+            }
+        }
+#else
         /// <summary>
         /// A lock free item enumerable.
         /// </summary>
@@ -136,9 +162,12 @@ namespace MonitorSlim
                     if (!s.Assigned)
                         yield break;
                     if (!s.Removed)
+                    {
                         yield return s.Value;
+                    }
                 }
             }
         }
     }
+#endif
 }

@@ -13,9 +13,12 @@ namespace MonitorSlim
 
         public void Enter()
         {
-            var spinner = new SpinWait();
-            while (Interlocked.CompareExchange(ref _lock, 5, 0) != 0)
-                spinner.SpinOnce();
+            if (Interlocked.CompareExchange(ref _lock, 5, 0) != 0)
+            {
+                var spinner = new SpinWait();
+                while (Interlocked.CompareExchange(ref _lock, 5, 0) != 0)
+                    spinner.SpinOnce();
+            }
         }
 
         public bool TryEnter()
