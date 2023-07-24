@@ -79,13 +79,13 @@ But as a job queue, you can see that even with 4 threads to enqueue and 4 thread
 
 ## ConcurrentList
 
-This class is written as a response to David Fowler question : ** I need a data structure that has lock free enumeration, fast adding and removing. Order doesn’t matter, I keep coming back to a doubly linked list. **
+This class is written as a response to David Fowler question : **I need a data structure that has lock free enumeration, fast adding and removing. Order doesn’t matter, I keep coming back to a doubly linked list.**
 
-So, I implemted a simple "naive" version using my MonitorSlim Monitor structure :
+So, I implemted a simple "naive" version using my MonitorSlim class :
 - Enumerations are lock-free.
 - Insert and remove is quite fast.
 
-Performance may be "honorable" compared to a "doubly linked list", it depend of the usage. I'm curious to compare !
+Performance may be "honorable" compared to a well written "doubly linked list", it depend of the usage. I'm curious to compare !
 
 ## License
 GhostFields.MonitorSlim is licensed under MIT License, which means it is free for all of your products, including commercial software.
