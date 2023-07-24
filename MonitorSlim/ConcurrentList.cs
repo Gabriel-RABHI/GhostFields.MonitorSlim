@@ -8,10 +8,25 @@ using System.Threading.Tasks;
 
 namespace MonitorSlim
 {
+    /// <summary>
+    /// Fast concurrent list : on one side, the writers are serialized by a short lock,
+    /// but on the enumerators side there is a lock free yield return loop on the entries.
+    /// It make it thread safe.
+    /// Drawback : the memory used by the structure is the one used at the peak count item.
+    /// In other words, if, during the lifetime of the instance of this class, you insert
+    /// 1 Million items, the memory used by this instance will never be shrinked to
+    /// use less memory.
+    /// Caution : this can be a advantage for all subsequent variation of
+    /// item count, because the memory is preallocated. But if you have large variations of item
+    /// count, then it can use large memory space unecessary.
+    /// So, this class fit for use case where you have average max item count relativelly stable
+    /// with large variations : in that case, performance will be good.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ConcurrentList<T>
         where T : IComparable<T>
     {
-        private ConcurrentListSlot<T>[] _slots;
+        private ConcurrentListSlot<T>[] _slots = new ConcurrentListSlot<T>[32];
         private int _writeIndex = -1;
         private int _count = 0;
         private MonitorSlim _lock;
@@ -23,13 +38,17 @@ namespace MonitorSlim
             public T Value;
         }
 
-        public ConcurrentList()
-        {
-            _slots = new ConcurrentListSlot<T>[32];
-        }
-
+        /// <summary>
+        /// Item count.
+        /// </summary>
         public int Count => _count;
 
+        /// <summary>
+        /// Add a new item to the list and return the private, internal index
+        /// that can be used to remove the item in an O(1) delay.
+        /// </summary>
+        /// <param name="item">The item to add</param>
+        /// <returns>The internal index of the item, used to remove it if necessary</returns>
         public int Add(T item)
         {
             _lock.Enter();
@@ -45,20 +64,13 @@ namespace MonitorSlim
                 else
                 {
                     _writeIndex++;
-                _redo:
                     if (_writeIndex > _slots.Length - 1)
-                    {
                         Array.Resize(ref _slots, _slots.Length * 2);
-                        goto _redo;
-                    }
-                    else
-                    {
-                        _slots[_writeIndex].Value = item;
-                        _slots[_writeIndex].Assigned = true;
-                        _slots[_writeIndex].Removed = false;
-                        _count++;
-                        return _writeIndex;
-                    }
+                    _slots[_writeIndex].Value = item;
+                    _slots[_writeIndex].Assigned = true;
+                    _slots[_writeIndex].Removed = false;
+                    _count++;
+                    return _writeIndex;
                 }
             }
             finally {
@@ -66,6 +78,10 @@ namespace MonitorSlim
             }
         }
 
+        /// <summary>
+        /// Remove all item that are Equal to the given one.
+        /// </summary>
+        /// <param name="item">The value to remove</param>
         public void Remove(T item)
         {
             _lock.Enter();
@@ -84,15 +100,20 @@ namespace MonitorSlim
             }
         }
 
+        /// <summary>
+        /// Fast O(1) removing of an item.
+        /// </summary>
+        /// <param name="index">The internal index.</param>
+        /// <exception cref="ArgumentException">Wrong parameters : overflow of already removed item index.</exception>
         public void RemoveIndex(int index)
         {
             _lock.Enter();
             try
             {
-                if (index > _writeIndex)
-                    throw new Exception($"Index {index} is out of range.");
+                if (index > _writeIndex || index < 0)
+                    throw new ArgumentException($"Index {index} is out of range.");
                 if (_slots[index].Removed)
-                    throw new Exception($"Index {index} already removed.");
+                    throw new ArgumentException($"Index {index} already removed.");
                 _slots[index].Removed = true;
                 _removed.Push(index);
                 _count--;
@@ -102,6 +123,9 @@ namespace MonitorSlim
             }
         }
 
+        /// <summary>
+        /// A lock free item enumerable.
+        /// </summary>
         public IEnumerable<T> Values
         {
             get
