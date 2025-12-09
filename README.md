@@ -1,6 +1,12 @@
 # ShortMonitor
 More than 2x faster Monitor classes for .Net, useful for really short and hot critical code sections like inner fields protection. They are simply revisited Spinlock implementations: sometimes, old fashion simple primitives are quite efficient. Typical use case is done in the sample with the AverageAccumulator class implementations. This Monitors are structures without any reference. They can be integrated in unmanaged structure while the .Net Monitor class need an object reference to call Enter or Exit methods.
 
+- **ShortMonitor** : Standalone lock primitive for narrow critical sections. This synchronysation primitive is not recursive : the same thread cannot enter multiple times.
+- **ShortRecursiveMonitor** : Standalone recursive lock primitive for narrow critical sections.
+- **ShortCountMonitor** : Standalone lock primitive that accept a limited entrancy count.
+- **ShortNonSpinnedMonitor** : Standalone lock primitive for narrow critical sections using a busy-wait loop.
+- **ShortReadWriteMonitor** : Standalone reader-writer lock primitive for narrow critical sections.
+
 Results for the simple, ShortMonitor lock :
 
 BenchmarkDotNet v0.15.8, Windows 10 (10.0.19045.4291/22H2/2022Update)

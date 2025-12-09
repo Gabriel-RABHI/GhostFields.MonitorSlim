@@ -20,7 +20,7 @@ namespace MonitorSlim
                 var l = list;
                 var rnd = new Random();
                 if (thid == 0)
-            {
+                {
                     var _added = new Stack<int>();
                     try
                     {

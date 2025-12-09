@@ -12,7 +12,7 @@ namespace MonitorSlim.Monitors
     public struct ShortCountMonitor
     {
         private int _count;
-        private int _max;
+        private volatile int _max;
 
         /// <summary>
         /// Construct the primitive by specifying the number of enters allowed.

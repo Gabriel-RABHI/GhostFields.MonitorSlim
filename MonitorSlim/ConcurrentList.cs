@@ -163,9 +163,7 @@ namespace MonitorSlim
                     if (!s.Assigned)
                         yield break;
                     if (!s.Removed)
-                    {
                         yield return s.Value;
-                    }
                 }
             }
         }
