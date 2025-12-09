@@ -1,5 +1,10 @@
 ﻿namespace MonitorSlim
 {
+    /// <summary>
+    /// Represents a thread-safe, basic queue for storing and retrieving elements in a first-in, first-out
+    /// (FIFO) order. For the sample only.
+    /// </summary>
+    /// <typeparam name="T">The type of elements contained in the queue.</typeparam>
     public class ConcurrentQueueSlim<T>
     {
         public const int SEG_SIZE = 4096;

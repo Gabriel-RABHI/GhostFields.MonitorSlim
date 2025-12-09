@@ -1,5 +1,6 @@
 ﻿#define ACURRATE_VALUES_NUMBER
 
+using MonitorSlim.Monitors;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 namespace MonitorSlim
 {
     /// <summary>
-    /// Fast concurrent list : on one side, the writers are serialized by a short lock,
+    /// Naive, Fast concurrent list : on one side, the writers are serialized by a short lock,
     /// but on the enumerators side there is a lock free yield return loop on the entries.
     /// It make it thread safe.
     /// Drawback : the memory used by the structure is the one used at the peak count item.
@@ -31,7 +32,7 @@ namespace MonitorSlim
         private ConcurrentListSlot<T>[] _slots = new ConcurrentListSlot<T>[32];
         private int _writeIndex = -1;
         private int _count = 0;
-        private MonitorSlim _lock;
+        private ShortMonitor _lock;
         private Stack<int> _removed = new Stack<int>();
 
         public struct ConcurrentListSlot<T>

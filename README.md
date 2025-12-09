@@ -1,29 +1,28 @@
-# MonitorSlim
-Up to 2x faster Monitor class for .Net, useful for really short and hot critical code sections like inner fields protection. It is simply a SpinLock implementation - revisited. Typical use case is done in the sample with the AverageAccumulator class implementations. This Monitor is a structure without any reference. It can be integrated in unmanaged structure while the .Net Monitor class need an object reference to call Enter or Exit methods.
+# ShortMonitor
+More than 2x faster Monitor classes for .Net, useful for really short and hot critical code sections like inner fields protection. They are simply revisited Spinlock implementations: sometimes, old fashion simple primitives are quite efficient. Typical use case is done in the sample with the AverageAccumulator class implementations. This Monitors are structures without any reference. They can be integrated in unmanaged structure while the .Net Monitor class need an object reference to call Enter or Exit methods.
 
-**CAUTION : This Monitor do not permit to be acquire many times by the same thread, it do not support recursivity.**
+Results for the simple, ShortMonitor lock :
 
-Results :
+BenchmarkDotNet v0.15.8, Windows 10 (10.0.19045.4291/22H2/2022Update)
+Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical cores
+.NET SDK 10.0.100
+  [Host]     : .NET 10.0.0 (10.0.0, 10.0.25.52411), X64 RyuJIT x86-64-v3
+  DefaultJob : .NET 10.0.0 (10.0.0, 10.0.25.52411), X64 RyuJIT x86-64-v3
 
-|       Method |      Mean |     Error |    StdDev |
-|------------- |----------:|----------:|----------:|
-| lock() | 13.315 ns | 0.0245 ns | 0.0229 ns |
-| MonitorSlim.Enter / Exit |  6.114 ns | 0.0858 ns | 0.0803 ns |
 
-*B*enchmarkDotNet=v0.13.1, OS=Windows 10.0.19042.1110 (20H2/October2020Update)*
-*Intel Core i9-9900K CPU 3.60GHz (Coffee Lake), 1 CPU, 16 logical and 8 physical cores*
-*.NET SDK=6.0.100*
-  *[Host]     : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT  [AttachedDebugger]*
-  DefaultJob : .NET 6.0.0 (6.0.21.52210), X64 RyuJIT*
+| Method                     | Mean      | Error     | StdDev    |
+|--------------------------- |----------:|----------:|----------:|
+| LockCriticalSection        | 13.471 ns | 0.0424 ns | 0.0376 ns |
+| MonitorSlimCriticalSection |  4.683 ns | 0.1202 ns | 0.3289 ns |
 
 ## Usage
 
-That kind of Monitor is used to protect really short code sections that are called millions times, typically to protect inner fields from incoherences. You have to copy the MonitorSlim in your source code to permit code inlining.
+That kind of Monitor is used to protect really short code sections that are called millions times, typically to protect inner fields from incoherences. You have to copy the ShortMonitor in your source code to permit code inlining.
 
 ```
     public class AverageAccumulator
     {
-        private MonitorSlim _monitor;
+        private ShortMonitor _monitor;
         private int _count, _sum;
 
         public void Add(int v)
@@ -81,7 +80,7 @@ But as a job queue, you can see that even with 4 threads to enqueue and 4 thread
 
 This class is written as a response to David Fowler question : **I need a data structure that has lock free enumeration, fast adding and removing. Order doesn’t matter, I keep coming back to a doubly linked list.**
 
-So, I implemented a simple "naive" version using my MonitorSlim class :
+So, I implemented a simple "naive" version using my ShortMonitor class :
 - Enumerations are lock-free.
 - Insert and remove is quite fast but serialized using MonitorLock.
 

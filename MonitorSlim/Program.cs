@@ -4,7 +4,3 @@ using GhostFields.Benchmarks.Execution;
 using MonitorSlim;
 
 BenchmarkConsoleRunner.PrintAllBenchmarksAndExecuteUserChoice();
-
-BenchmarkRunner.Run<BenchMonitor>();
-
-BenchmarkRunner.Run<BenchAverage>();

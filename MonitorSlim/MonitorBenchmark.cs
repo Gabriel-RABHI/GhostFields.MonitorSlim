@@ -1,6 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using GhostFields.Benchmarks.Execution;
+using MonitorSlim.Monitors;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -10,8 +11,6 @@ using System.Threading.Tasks;
 
 namespace MonitorSlim
 {
-
-
     public class MonitorBenchmark : BenchmarkBase
     {
         private const string text = "Bonjôrnõ. Hello world of î rollos...";
@@ -34,7 +33,7 @@ namespace MonitorSlim
         public void CorrectnessTest()
         {
             int n = 0;
-            var monitor = new MonitorSlim();
+            var monitor = new ShortMonitor();
             RunParalellAction(Environment.ProcessorCount, (thid) =>
             {
                 for (int i = 0; i < COUNT * 20; i++)
@@ -160,7 +159,7 @@ namespace MonitorSlim
 
     public class BenchMonitor
     {
-        private MonitorSlim _monitor;
+        private ShortMonitor _monitor;
 
         [Benchmark]
         public void LockCriticalSection()
@@ -186,7 +185,7 @@ namespace MonitorSlim
 
     public class AverageAccumulatorSlim
     {
-        private MonitorSlim _monitor;
+        private ShortMonitor _monitor;
         private int _count, _sum;
 
         public void Add(int v)
