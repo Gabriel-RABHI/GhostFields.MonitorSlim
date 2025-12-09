@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonitorSlim
+namespace MonitorSlim.Collections
 {
     /// <summary>
     /// Naive, Fast concurrent list : on one side, the writers are serialized by a short lock,

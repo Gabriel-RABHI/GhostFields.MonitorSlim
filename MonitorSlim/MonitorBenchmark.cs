@@ -1,6 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using GhostFields.Benchmarks.Execution;
+using MonitorSlim.Collections;
 using MonitorSlim.Monitors;
 using System;
 using System.Collections.Concurrent;

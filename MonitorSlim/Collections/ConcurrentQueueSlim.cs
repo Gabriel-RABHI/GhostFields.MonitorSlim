@@ -1,4 +1,4 @@
-﻿namespace MonitorSlim
+﻿namespace MonitorSlim.Collections
 {
     /// <summary>
     /// Represents a thread-safe, basic queue for storing and retrieving elements in a first-in, first-out

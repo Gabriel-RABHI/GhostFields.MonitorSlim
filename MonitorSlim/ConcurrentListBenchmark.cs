@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Running;
 using GhostFields.Benchmarks.Execution;
+using MonitorSlim.Collections;
 using System.Threading;
 
 namespace MonitorSlim

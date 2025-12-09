@@ -1,3 +1,5 @@
+using MonitorSlim.Collections;
+
 namespace MonitorSlim.Tests
 {
     public class ConcurrentQueueSlimShould
