@@ -1,14 +1,9 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
-using GhostFields.Benchmarks.Execution;
+using GhostBodyObject.BenchmarkRunner;
 using MonitorSlim.Collections;
 using MonitorSlim.Monitors;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MonitorSlim
 {
@@ -18,24 +13,24 @@ namespace MonitorSlim
         private readonly int COUNT = 10_000_000;
         private readonly int MAX_THREADS = 5;
 
-        [BenchmarkMethod(Code = "M1", Category = "Monitor", Name = "Run benchmark : lock() vs MonitorSlim.")]
+        [BruteForceBenchmark("M1", "Run benchmark : lock() vs MonitorSlim.", "Monitor")]
         public void RunBenchMonitor()
         {
             BenchmarkRunner.Run<BenchMonitor>();
         }
 
-        [BenchmarkMethod(Code = "M2", Category = "Monitor", Name = "Run everage class using lock() vs using MonitorSlim.")]
+        [BruteForceBenchmark("M2", "Run everage class using lock() vs using MonitorSlim.", "Monitor")]
         public void RunBenchAverage()
         {
             BenchmarkRunner.Run<BenchAverage>();
         }
 
-        [BenchmarkMethod(Code = "M3", Category = "Monitor", Name = "Correctness test.")]
+        [BruteForceBenchmark("M3", "Correctness test.", "Monitor")]
         public void CorrectnessTest()
         {
             int n = 0;
             var monitor = new ShortMonitor();
-            RunParalellAction(Environment.ProcessorCount, (thid) =>
+            RunParallelAction(Environment.ProcessorCount, (thid) =>
             {
                 for (int i = 0; i < COUNT * 20; i++)
                 {
@@ -54,13 +49,13 @@ namespace MonitorSlim
             }).PrintToConsole("No incoherence found.");
         }
 
-        [BenchmarkMethod(Code = "Q1", Category = "Concurrent queue", Name = "SpinWait based 'slim' concurrent queue vs .Net ConcurrentQueue.")]
+        [BruteForceBenchmark("Q1", "SpinWait based 'slim' concurrent queue vs .Net ConcurrentQueue.", "Concurrent queue")]
         public void ConcurrentQueueBenchmark()
         {
             for (int j = 1, th = 1; j < MAX_THREADS; j++, th *= 2)
             {
                 var q = new ConcurrentQueueSlim<int>();
-                RunParalellAction(th, (thid) =>
+                RunParallelAction(th, (thid) =>
                 {
                     if (thid % 2 == 0)
                     {
@@ -81,7 +76,7 @@ namespace MonitorSlim
             for (int j = 1, th = 1; j < MAX_THREADS; j++, th *= 2)
             {
                 var q = new ConcurrentQueue<int>();
-                RunParalellAction(th, (thid) =>
+                RunParallelAction(th, (thid) =>
                 {
                     if (thid % 2 == 0)
                     {
@@ -100,7 +95,7 @@ namespace MonitorSlim
             }
         }
 
-        [BenchmarkMethod(Code = "Q2", Category = "Concurrent queue", Name = "SpinWait based 'slim' balance queue, to see how are distributed items betwen threads.")]
+        [BruteForceBenchmark("Q2", "SpinWait based 'slim' balance queue, to see how are distributed items betwen threads.", "Concurrent queue")]
         public void ConcurrentQueueBalance()
         {
             for (int j = 1, th = 1; j < MAX_THREADS; j++, th *= 2)
@@ -108,7 +103,7 @@ namespace MonitorSlim
                 var q = new ConcurrentQueueSlim<int>();
                 var receved = new int[th];
                 int n = 0;
-                RunParalellAction(th, (thid) =>
+                RunParallelAction(th, (thid) =>
                 {
                     if (thid == 0)
                     {
@@ -119,14 +114,15 @@ namespace MonitorSlim
                     {
                         do
                         {
-                            if (q.TryDequeue(out var o)) {
+                            if (q.TryDequeue(out var o))
+                            {
                                 receved[thid]++;
                                 Interlocked.Increment(ref n);
                             }
                         } while (n < COUNT);
                     }
                 }).PrintToConsole("Slim Queue - Thread Count = " + th).PrintDelayPerOp(COUNT * th);
-                WriteCommentLine("Balance = " + String.Join(" | ", receved));
+                Console.WriteLine("Balance = " + String.Join(" | ", receved));
             }
 
             for (int j = 1, th = 1; j < MAX_THREADS; j++, th *= 2)
@@ -134,7 +130,7 @@ namespace MonitorSlim
                 var q = new ConcurrentQueue<int>();
                 var receved = new int[th];
                 int n = 0;
-                RunParalellAction(th, (thid) =>
+                RunParallelAction(th, (thid) =>
                 {
                     if (thid == 0)
                     {
@@ -153,7 +149,7 @@ namespace MonitorSlim
                         } while (n < COUNT);
                     }
                 }).PrintToConsole(".Net Concurrent Queue - Thread Count = " + th).PrintDelayPerOp(COUNT * th);
-                WriteCommentLine("Balance = " + String.Join(" | ", receved));
+                Console.WriteLine("Balance = " + String.Join(" | ", receved));
             }
         }
     }

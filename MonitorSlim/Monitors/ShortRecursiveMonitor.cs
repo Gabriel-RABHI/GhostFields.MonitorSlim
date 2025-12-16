@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Threading;
 
 namespace MonitorSlim.Monitors
 {
@@ -63,7 +62,8 @@ namespace MonitorSlim.Monitors
         /// Decrements the recursion count. The lock is released only when the count reaches zero.
         /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Exit() {
+        public void Exit()
+        {
             if (--_count == 0)
                 Volatile.Write(ref _thId, 0);
         }

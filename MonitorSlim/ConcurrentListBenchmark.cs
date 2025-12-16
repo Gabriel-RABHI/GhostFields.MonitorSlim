@@ -1,7 +1,5 @@
-﻿using BenchmarkDotNet.Running;
-using GhostFields.Benchmarks.Execution;
+﻿using GhostBodyObject.BenchmarkRunner;
 using MonitorSlim.Collections;
-using System.Threading;
 
 namespace MonitorSlim
 {
@@ -10,13 +8,13 @@ namespace MonitorSlim
         private readonly int COUNT = 10_000_000;
         private readonly int LIST_LENGHT = 10_000;
 
-        [BenchmarkMethod(Code = "L1", Category = "Concurrent List", Name = "Add, remove, enumerate concurrently randomly around 10k entries.")]
+        [BruteForceBenchmark("L1", "Add, remove, enumerate concurrently randomly around 10k entries.", "Concurrent List")]
         public void RunListRandomBench()
         {
             var list = new ConcurrentList<int>();
             var ended = false;
             long cycles = 0;
-            RunParalellAction(Environment.ProcessorCount, (thid) =>
+            RunParallelAction(Environment.ProcessorCount, (thid) =>
             {
                 var l = list;
                 var rnd = new Random();
@@ -35,17 +33,19 @@ namespace MonitorSlim
                                     _added.Push(l.Add(rnd.Next()));
                                 else
                                     if (_added.TryPop(out int idx))
-                                        l.RemoveIndex(idx);
+                                    l.RemoveIndex(idx);
                             }
                         }
-                    } catch (Exception ex)
+                    }
+                    catch (Exception ex)
                     {
-                        WriteLine(ex.ToString());
+                        Console.WriteLine(ex.ToString());
                     }
                     ended = true;
-                } else
+                }
+                else
                 {
-                    while(!ended)
+                    while (!ended)
                     {
                         Interlocked.Increment(ref cycles);
                         long sum;
@@ -54,16 +54,16 @@ namespace MonitorSlim
                     }
                 }
             }).PrintToConsole($"{COUNT} add / removes done").PrintDelayPerOp(COUNT);
-            WriteCommentLine($"There is {cycles} enumerations done concurrently bye {Environment.ProcessorCount - 1} threads ont a {list.Count} length list.");
+            Console.WriteLine($"There is {cycles} enumerations done concurrently bye {Environment.ProcessorCount - 1} threads ont a {list.Count} length list.");
         }
 
-        [BenchmarkMethod(Code = "L2", Category = "Concurrent List", Name = "Add 10k items, remove all, add 10k, remove... and enumerate concurrently.")]
+        [BruteForceBenchmark("L2", "Add 10k items, remove all, add 10k, remove... and enumerate concurrently.", "Concurrent List")]
         public void RunVaryingListMonitor()
         {
             var list = new ConcurrentList<int>();
             var ended = false;
             long cycles = 0;
-            RunParalellAction(Environment.ProcessorCount, (thid) =>
+            RunParallelAction(Environment.ProcessorCount, (thid) =>
             {
                 var l = list;
                 var rnd = new Random();
@@ -86,7 +86,7 @@ namespace MonitorSlim
                     }
                     catch (Exception ex)
                     {
-                        WriteLine(ex.ToString());
+                        Console.WriteLine(ex.ToString());
                     }
                     ended = true;
                 }
@@ -101,7 +101,7 @@ namespace MonitorSlim
                     }
                 }
             }).PrintToConsole($"{COUNT} add / removes done").PrintDelayPerOp(COUNT);
-            WriteCommentLine($"There is {cycles} enumerations done concurrently bye {Environment.ProcessorCount - 1} threads ont a {list.Count} length list.");
+            Console.WriteLine($"There is {cycles} enumerations done concurrently bye {Environment.ProcessorCount - 1} threads ont a {list.Count} length list.");
         }
     }
 }

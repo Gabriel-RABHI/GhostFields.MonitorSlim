@@ -1,13 +1,6 @@
 ﻿#define ACURRATE_VALUES_NUMBER
 
 using MonitorSlim.Monitors;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MonitorSlim.Collections
 {
@@ -36,7 +29,8 @@ namespace MonitorSlim.Collections
         private Stack<int> _removed = new Stack<int>();
 
         public struct ConcurrentListSlot<T>
-            where T : IComparable<T> {
+            where T : IComparable<T>
+        {
             public bool Removed, Assigned;
             public T Value;
         }
@@ -76,7 +70,8 @@ namespace MonitorSlim.Collections
                     return _writeIndex;
                 }
             }
-            finally {
+            finally
+            {
                 _lock.Exit();
             }
         }
@@ -98,7 +93,8 @@ namespace MonitorSlim.Collections
                         _count--;
                     }
             }
-            finally {
+            finally
+            {
                 _lock.Exit();
             }
         }
@@ -121,7 +117,8 @@ namespace MonitorSlim.Collections
                 _removed.Push(index);
                 _count--;
             }
-            finally {
+            finally
+            {
                 _lock.Exit();
             }
         }

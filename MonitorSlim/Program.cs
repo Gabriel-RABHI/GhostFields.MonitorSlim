@@ -1,6 +1,4 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using BenchmarkDotNet.Running;
-using GhostFields.Benchmarks.Execution;
-using MonitorSlim;
+using GhostBodyObject.BenchmarkRunner;
 
-BenchmarkConsoleRunner.PrintAllBenchmarksAndExecuteUserChoice();
+BenchmarkEngine.DiscoverAndShow();
