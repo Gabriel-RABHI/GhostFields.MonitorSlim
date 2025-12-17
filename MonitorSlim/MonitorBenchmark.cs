@@ -157,6 +157,7 @@ namespace MonitorSlim
     public class BenchMonitor
     {
         private ShortMonitor _monitor;
+        private SpinLock sl = new SpinLock(false);
 
         [Benchmark]
         public void LockCriticalSection()
@@ -166,18 +167,30 @@ namespace MonitorSlim
 
         [Benchmark]
         public void MonitorSlimCriticalSection() { _monitor.Enter(); _monitor.Exit(); }
+
+        [Benchmark]
+        public void SpinLockCriticalSection()
+        {
+            bool taken = false;
+            sl.Enter(ref taken);
+            sl.Exit();
+        }
     }
 
     public class BenchAverage
     {
         AverageAccumulatorSlim _avMs = new AverageAccumulatorSlim();
         AverageAccumulatorLock _avLk = new AverageAccumulatorLock();
+        AverageAccumulatorSpin _avSp = new AverageAccumulatorSpin();
 
         [Benchmark]
         public void LockBasedAverage() => _avLk.Add(15);
 
         [Benchmark]
         public void SlimBasedAverage() => _avMs.Add(15);
+
+        [Benchmark]
+        public void SpinBasedAverage() => _avSp.Add(15);
     }
 
     public class AverageAccumulatorSlim
@@ -211,6 +224,44 @@ namespace MonitorSlim
                 finally
                 {
                     _monitor.Exit();
+                }
+            }
+        }
+    }
+
+    public class AverageAccumulatorSpin
+    {
+        private SpinLock sl = new SpinLock(false);
+        private int _count, _sum;
+
+        public void Add(int v)
+        {
+            bool taken = false;
+            sl.Enter(ref taken);
+            try
+            {
+                _sum += v;
+                _count++;
+            }
+            finally
+            {
+                sl.Exit();
+            }
+        }
+
+        public int Result
+        {
+            get
+            {
+                bool taken = false;
+                sl.Enter(ref taken);
+                try
+                {
+                    return _count == 0 ? 0 : _sum / _count;
+                }
+                finally
+                {
+                    sl.Exit();
                 }
             }
         }
